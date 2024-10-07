@@ -1,0 +1,42 @@
+<div id="app">
+  <h2>Todo App</h2>
+  <p v-for="note in notes" :key="note._id">
+    <b>* {{ note.name }}</b> <!-- Cambia para mostrar la propiedad correcta -->
+  </p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js" integrity="sha512-DdX/YwF5e41Ok+AI81HI8f5/5UsoxCVT9GKYZRIzpLxb8Twz4ZwPPX+jQMwMhNQ9b5+zDEefc+dcvQoPWGNZ3g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script type="module">
+  import { createApp } from "https://unpkg.com/vue@3/dist/vue.esm-browser.js";
+
+  const API_URL = "http://localhost:3307";  // Cambiado a HTTP
+
+  createApp({
+    data() {
+      return {
+        title: "Todo App",
+        notes: []
+      };
+    },
+    methods: {
+      async refreshData() {
+        try {
+          console.log("Haciendo petición a:", API_URL + "/api/todoapp/get");
+          const res = await axios.get(API_URL + "/api/todoapp/get");
+          
+          // Imprime el resultado completo en la consola
+          console.log("Respuesta de la API:", res);
+
+          // Asigna los datos recibidos a notes
+          this.notes = res.data;
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      }
+    },
+    mounted() {
+      this.refreshData();
+    }
+  }).mount("#app");
+</script>
